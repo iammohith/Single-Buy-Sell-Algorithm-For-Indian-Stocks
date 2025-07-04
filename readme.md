@@ -164,4 +164,4 @@ MIT License. Contributions and forks are welcome.
 
 ---
 
-*Developed by Mohith Sai — happy trading!*
+*Developed by Mohith Sai Gorla — happy trading!*
