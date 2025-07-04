@@ -1,0 +1,1 @@
+# Single-Buy-Sell-Algorithm-For-Indian-Stocks
