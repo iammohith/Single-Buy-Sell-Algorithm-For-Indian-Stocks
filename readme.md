@@ -4,7 +4,7 @@ A command‑line Python tool to fetch five years of historical closing prices fo
 
 ---
 
-## 🔍 Overview
+## Overview
 
 `India Stocks Best Single Trade` is tailored for traders, quants, and financial analysts seeking a robust, automated way to identify the optimal single‑transaction profit opportunity over the past five years, specifically for Indian stock tickers on NSE or BSE.
 
@@ -17,7 +17,7 @@ Key features:
 
 ---
 
-## ⚙️ Prerequisites
+## Prerequisites
 
 * Python 3.9 or higher
 * Internet connection to fetch data from Yahoo Finance
@@ -45,30 +45,30 @@ pip install yfinance pandas python-dateutil
 
 ---
 
-## 🚀 Installation & Setup
+## Installation & Setup
 
-1. **Clone the repository**:
+### 1. Clone the repository:
 
-   ```bash
-   git clone https://github.com/iammohith/Single-Buy-Sell-Algorithm-For-Indian-Stocks.git \
-     && cd Single-Buy-Sell-Algorithm-For-Indian-Stocks
-   ```
+```bash
+git clone https://github.com/iammohith/Single-Buy-Sell-Algorithm-For-Indian-Stocks.git \
+  && cd Single-Buy-Sell-Algorithm-For-Indian-Stocks
+```
 
-2. **Install dependencies**:
+### 2. Install dependencies:
 
-   ```bash
-   pip install -r requirements.txt
-   ```
+```bash
+pip install -r requirements.txt
+```
 
-3. **Verify installation** (optional):
+### 3. Verify installation (optional):
 
-   ```bash
-   python best_trade.py --help
-   ```
+```bash
+python best_trade.py --help
+```
 
 ---
 
-## 🎯 Usage
+## Usage
 
 Run the script and follow the interactive prompts:
 
@@ -97,7 +97,7 @@ BEST TRADE for BEL.NS:
 
 ---
 
-## 🏗️ Architecture & Code Overview
+## Architecture & Code Overview
 
 ### 1. `trading_utils.types`
 
@@ -142,7 +142,7 @@ BEST TRADE for BEL.NS:
 
 ---
 
-## 🛡️ Error Handling
+## Error Handling
 
 * **Data Unavailable**: Raises `ValueError` if Yahoo Finance returns empty data or missing the `Close` column.
 * **Roll Window Exceeded**: Errors if no trading day within 5 days of the 5‑year anniversary.
@@ -150,7 +150,7 @@ BEST TRADE for BEL.NS:
 
 ---
 
-## 🔧 Customization & Extensibility
+## Customization & Extensibility
 
 * Modify `YEARS_BACK` or `MAX_ROLL_DAYS` in `StockDataFetcher` for different lookback periods or roll logic.
 * Extend batch processing by looping over multiple tickers or reading from a CSV.
@@ -158,10 +158,10 @@ BEST TRADE for BEL.NS:
 
 ---
 
-## 📜 License
+## License
 
 MIT License. Contributions and forks are welcome.
 
 ---
 
-*Developed by Mohith Sai Gorla — happy trading!*
+*Developed by Mohith Sai — happy trading!*
