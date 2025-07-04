@@ -6,59 +6,63 @@ A command‑line Python tool to fetch five years of historical closing prices fo
 
 ## 🔍 Overview
 
-`India Stocks Best Single Trade` is designed for analysts, quants, and traders who want a quick, accurate way to identify the optimal single‑transaction profit opportunity over the past five years for any Indian ticker symbol.
+`India Stocks Best Single Trade` is tailored for traders, quants, and financial analysts seeking a robust, automated way to identify the optimal single‑transaction profit opportunity over the past five years, specifically for Indian stock tickers on NSE or BSE.
 
 Key features:
 
-* **5‑Year Lookback**: Automatically computes the exact date five years ago and rolls forward up to five trading days if that date is a holiday/weekend.
-* **Exchange Agnostic**: Supports both NSE (`.NS`) and BSE (`.BO`) tickers via a simple prompt.
-* **O(n) Profit Scan**: Implements the classic single‑transaction maximum profit algorithm in linear time.
-* **Production‑Grade**: Includes logging, robust error handling, and clear user messaging.
+* **5‑Year Lookback**: Calculates the exact date five years prior and rolls forward up to five trading days if that date falls on a weekend or market holiday.
+* **Exchange Support**: Prompt‑driven support for NSE (`.NS`) and BSE (`.BO`) symbols.
+* **O(n) Efficiency**: Leverages a linear‑time algorithm to find the maximum profit buy/sell pair in a single pass.
+* **Production‑Ready**: Includes structured logging, comprehensive error handling, and clear user messaging.
 
 ---
 
 ## ⚙️ Prerequisites
 
-Ensure you have Python 3.9+ installed along with:
+* Python 3.9 or higher
+* Internet connection to fetch data from Yahoo Finance
+
+Install required packages:
 
 ```bash
-pip install yfinance pandas python‑dateutil
+pip install yfinance pandas python-dateutil
 ```
 
 ---
 
-## 📁 Project Structure
+## 📁 Repository Structure
 
 ```plaintext
-├── best_trade.py        # Main Python script (entry point)
-├── trading_utils/       # Module containing core classes
-│   ├── __init__.py      # Package init
-│   ├── fetcher.py       # StockDataFetcher class
-│   └── analyzer.py      # TradeAnalyzer class
-├── README.md            # This documentation
-└── requirements.txt     # Pinned dependencies
+├── best_trade.py         # Main CLI entrypoint
+├── trading_utils/        # Core library modules
+│   ├── __init__.py       # Package initialization
+│   ├── types.py          # Exchange enum & Trade dataclass
+│   ├── fetcher.py        # StockDataFetcher implementation
+│   └── analyzer.py       # TradeAnalyzer implementation
+├── README.md             # Project documentation
+└── requirements.txt      # Pinned dependencies
 ```
 
 ---
 
-## 🚀 Installation
+## 🚀 Installation & Setup
 
-1. **Clone the repo**:
+1. **Clone the repository**:
 
    ```bash
    ```
 
-git clone [https://github.com/your-org/india-stocks-best-trade.git](https://github.com/your-org/india-stocks-best-trade.git)
-cd india-stocks-best-trade
+git clone [https://github.com/iammohith/Single-Buy-Sell-Algorithm-For-Indian-Stocks.git](https://github.com/iammohith/Single-Buy-Sell-Algorithm-For-Indian-Stocks.git)
+cd Single-Buy-Sell-Algorithm-For-Indian-Stocks
 
 ````
 
-2. **Set up environment**:
+2. **Install dependencies**:
    ```bash
 pip install -r requirements.txt
 ````
 
-3. **Verify**:
+3. **Verify installation** (optional):
 
    ```bash
    ```
@@ -71,109 +75,99 @@ python best\_trade.py --help
 
 ## 🎯 Usage
 
-Run the script and follow prompts:
+Run the script and follow the interactive prompts:
 
 ```bash
 python best_trade.py
 ````
 
-1. **Enter ticker symbol** (e.g. `TCS`, `BEL`).
-2. **Choose exchange**: `NSE` or `BSE`.
+1. **Enter ticker symbol** (e.g., `TCS`, `BEL`).
+2. **Select exchange** by typing `NSE` or `BSE`.
 
-Example:
+**Example session**:
 
 ```
-Enter ticker symbol (e.g. TCS, BEL): TCS
+Enter ticker symbol (e.g. TCS, BEL): BEL
 Exchange [NSE/BSE]: NSE
 ```
 
-Output:
+**Sample output**:
 
 ```
-BEST TRADE for TCS.NS:
-  • Buy  on 2020‑07‑06 at ₹2,150.00
-  • Sell on 2025‑07‑01 at ₹4,380.00
-  → Profit: ₹2,230.00
+BEST TRADE for BEL.NS:
+  • Buy  on 2020-10-29 at ₹28.88
+  • Sell on 2025-07-01 at ₹432.25
+  → Profit: ₹403.37
 ```
 
 ---
 
 ## 🏗️ Architecture & Code Overview
 
-### 1. `Exchange` Enum
+### 1. `trading_utils.types`
 
-* Defines supported exchanges (`NSE`, `BSE`) and their Yahoo Finance suffixes (`NS`, `BO`).
-* Factory method `from_str()` to parse user input.
+* **`Exchange` Enum**: Maps `NSE`/`BSE` to Yahoo Finance suffixes `.NS`/`.BO` with input parsing.
+* **`Trade` Dataclass**: Encapsulates buy/sell dates, prices, and profit.
 
-### 2. `StockDataFetcher`
+### 2. `trading_utils.fetcher` (`StockDataFetcher`)
 
 * **Responsibilities**:
 
-  * Compute the exact date 5 years ago using `dateutil.relativedelta`.
-  * Download OHLC data via `yfinance`.
-  * Roll forward up to 5 days if the anniversary date is not a trading day.
-  * Validate data presence and return a `pandas.Series` of closing prices.
+  * Compute `target_date = today - 5 years` using `relativedelta`.
+  * Download OHLC data via `yfinance` for `ticker.exchange`.
+  * Roll forward up to 5 calendar days if `target_date` is non‑trading.
+  * Validate and return a cleaned `pandas.Series` of closing prices.
 
 * **Key Constants**:
 
   * `YEARS_BACK = 5`
   * `MAX_ROLL_DAYS = 5`
 
-### 3. `TradeAnalyzer`
+### 3. `trading_utils.analyzer` (`TradeAnalyzer`)
 
-* **Responsibility**: Implements an O(n) scan to find the buy date with the lowest price and, concurrently, the sell date that maximizes profit.
+* **Responsibility**: Implements a single‑pass O(n) scan to identify the optimal buy/sell dates.
 * **Algorithm**:
 
-  1. Initialize `min_price` = ∞, `best_profit` = 0.
-  2. For each `(date, price)`:
+  1. Initialize `min_price = ∞`, `best_profit = 0`.
+  2. Iterate through `(date, price)`:
 
-     * Calculate `profit = price - min_price`.
-     * Update `best_profit`, `buy_date`, and `sell_date` if `profit > best_profit`.
-     * Update `min_price` if `price < min_price`.
-  3. Return a `Trade` dataclass or `None` if no profit.
+     * Compute `profit = price - min_price`.
+     * Update `best_profit` and record `buy_date` & `sell_date` if `profit` improves.
+     * Update `min_price` if `price` is lower.
+  3. Return a `Trade` instance or `None` if no positive profit.
 
-### 4. `Trade` Dataclass
-
-* Encapsulates a single optimal transaction:
-
-  * `buy_date`, `sell_date` (timestamps)
-  * `buy_price`, `sell_price`, `profit` (floats)
-
-### 5. `best_trade.py` (Main Script)
+### 4. `best_trade.py` (CLI)
 
 * **Flow**:
 
-  1. Prompt user for ticker & exchange.
-  2. Instantiate `StockDataFetcher`, retrieve closes.
-  3. Instantiate `TradeAnalyzer`, compute trade.
-  4. Print formatted result or "no profit" message.
-
-* **Logging**:
-
-  * Configured via `logging.basicConfig` to show timestamps and INFO‐level messages.
+  1. Prompt for ticker & exchange.
+  2. Fetch closing prices via `StockDataFetcher`.
+  3. Analyze with `TradeAnalyzer`.
+  4. Print results or a "no profit" message.
+* **Logging**: Configured with `logging.basicConfig` at INFO level.
 
 ---
 
 ## 🛡️ Error Handling
 
-* **No Data**: Raises a `ValueError` if Yahoo Finance returns empty or missing the `Close` column.
-* **Roll Limit Exceeded**: Alerts if no trading day within 5 days after the 5-year anniversary.
-* **NaN Cleanup**: Ensures all NaNs are dropped, or errors out if the resulting series is empty.
+* **Data Unavailable**: Raises `ValueError` if Yahoo Finance returns empty data or missing the `Close` column.
+* **Roll Window Exceeded**: Errors if no trading day within 5 days of the 5‑year anniversary.
+* **NaN Purge**: Drops NaNs, errors if the resulting series is empty.
 
 ---
 
-## 🔧 Extensibility
+## 🔧 Customization & Extensibility
 
-* **Lookback Period**: Change `YEARS_BACK` in `StockDataFetcher`.
-* **Roll Logic**: Adjust `MAX_ROLL_DAYS` or add backward‑roll support.
-* **Batch Mode**: Adapt the main script to process multiple tickers in a loop or via a file.
+* Modify `YEARS_BACK` or `MAX_ROLL_DAYS` in `StockDataFetcher` for different lookback periods or roll logic.
+* Extend batch processing by looping over multiple tickers or reading from a CSV.
+* Integrate with scheduling tools (cron, Airflow) for automated daily/weekly runs.
 
 ---
 
 ## 📜 License
 
-MIT License. Feel free to fork and customize.
+MIT License. Contributions and forks are welcome.
 
 ---
 
-*Developed by \[Mohith Sai Gorla] — happy trading!*
+*Developed by Mohith Sai Gorla — happy trading!*
